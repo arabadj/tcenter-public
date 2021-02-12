@@ -24,8 +24,8 @@
     - {role: profile-common}
     - {role: profile-ssh}
     - {role: profile-mc}
-    - {role: profile-git}
 
+    # - {role: profile-git}
     # - {role: profile-gbin}
     # - {role: profile-gnupg}
     # - {role: profile-docker}
