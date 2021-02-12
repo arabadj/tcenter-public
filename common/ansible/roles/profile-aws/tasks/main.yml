@@ -1,0 +1,23 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Create Directory
+    file:
+      path: "~/.gnupg"
+      state: directory
+      mode: 0700
+
+  - name: Configure AWS 
+    copy: 
+      src: "{{ artifacts }}/home/user/.aws/"
+      dest: "~/.aws/"
+      mode: 0600
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+  ignore_errors: true
+
+# ====================================================================================================================================

@@ -1,0 +1,19 @@
+---
+
+# ====================================================================================================================================
+
+- name: Define Viriables
+  set_fact:
+    version: "2.2.9"
+
+- name: Stat Vagrant
+  stat:
+    path: "/usr/bin/vagrant"
+  register: vagrant
+
+- name: Install Packages
+  apt:
+    deb: "https://releases.hashicorp.com/vagrant/{{ version }}/vagrant_{{ version }}_x86_64.deb"
+  when: not vagrant.stat.exists
+
+# ====================================================================================================================================

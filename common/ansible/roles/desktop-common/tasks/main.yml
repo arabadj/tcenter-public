@@ -1,0 +1,65 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Update Cache
+    yum:
+      update_cache: yes
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gdm
+      - "@base-x"
+      - "@Xfce"
+      - "@KDE Plasma Workspaces"
+      - "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
+      - wireshark
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Repo Key
+    apt_key:
+      url: "https://dl.google.com/linux/linux_signing_key.pub"
+      state: present
+
+  - name: Install Repo
+    apt_repository:
+      filename: "google-chrome"
+      repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+      state: present
+
+  - name: Update Cache
+    apt: 
+      update_cache: yes
+    changed_when: false
+
+  - name: Upgrade System
+    apt:
+      upgrade: yes
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - virtualbox-guest-x11
+      - xinit
+      - gdm3
+      - kde-plasma-desktop
+      - google-chrome-stable
+      - wireshark
+
+  when:
+    - (ansible_distribution == "Ubuntu") 
+
+# ====================================================================================================================================

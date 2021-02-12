@@ -1,0 +1,52 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Install Repos
+    get_url:
+      url: "{{ item }}"
+      dest: "/etc/yum.repos.d/"
+    with_items:
+      - "https://cli.github.com/packages/rpm/gh-cli.repo"
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Repo Keys
+    apt_key:
+      id: C99B11DEB97541F0
+      keyserver: hkp://keyserver.ubuntu.com:80
+      state: present
+
+  - name: Install Repos
+    apt_repository:
+      repo: deb https://cli.github.com/packages {{ ansible_distribution_release }} main
+      state: present
+
+  when:
+    - (ansible_distribution == "Ubuntu")
+
+# ====================================================================================================================================
+
+- name: Install Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gh
+
+# ====================================================================================================================================
+
+- name: Install Packages (pip3)
+  pip:
+    executable: /usr/bin/pip3
+    name: [awscli, azure-cli]
+    # state: latest
+
+# ====================================================================================================================================

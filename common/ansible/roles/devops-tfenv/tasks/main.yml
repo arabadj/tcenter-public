@@ -1,0 +1,59 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+    - name: Define Viriables
+      set_fact:
+        bindir: "~/.local/bin"
+        downloads: "~/install"
+        version: "0.12.24"
+
+    - name: Create Directory 
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      with_items:
+        - "{{ bindir }}"
+        - "{{ downloads }}"
+
+    - name: Stat Terraform
+      stat:
+        path: "{{ bindir }}/terraform"
+      register: terraform
+
+    - name: Clean Terraform 
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "~/.tfenv"
+        - "{{ bindir }}/terraform"
+        - "{{ bindir }}/tfenv"
+      when:
+        - (not terraform.stat.exists)
+
+    - name: Checkout Tfenv 
+      git:
+        repo: "https://github.com/tfutils/tfenv.git"
+        dest: "~/.tfenv"
+      when:
+        - (not terraform.stat.exists)
+
+    - name: Install Terraform
+      shell: |
+        ln -sf ~/.tfenv/bin/* {{ bindir }}
+        {{ bindir }}/tfenv install {{ version }}
+        {{ bindir }}/tfenv use {{ version }}
+      args:
+        warn: no
+        chdir: "/home/{{ ansible_deployer }}"
+      when:
+        - (not terraform.stat.exists)
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

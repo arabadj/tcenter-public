@@ -1,0 +1,67 @@
+---
+
+# ====================================================================================================================================
+
+- name: PRULLCONFIG
+  hosts: localhost
+  connection: local
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  vars_files: variables.yml
+  gather_facts: true
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+  
+# ====================================================================================================================================
+
+  tasks:
+
+# ====================================================================================================================================
+
+    - name: Syncronize User Profile
+      synchronize:
+        mode: pull
+        src: "~/"
+        dest: "{{ artifacts }}/home/user/"
+        owner: no
+        group: no
+        perms: no
+        recursive: yes
+        existing_only: yes
+
+    - name: Syncronize Root Profile
+      become: true
+      become_user: root
+      synchronize:
+        mode: pull
+        src: "/root/"
+        dest: "{{ artifacts }}/root/"
+        owner: no
+        group: no
+        perms: no
+        recursive: yes
+        existing_only: yes
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    # - name: Syncronize User Profile (windows)
+    #   synchronize:
+    #     mode: pull
+    #     src: "{{ home_win }}/{{ item }}"
+    #     dest: "{{ artifacts }}/win/Users/user/{{ item }}"
+    #     owner: no
+    #     group: no
+    #     perms: no
+    #     recursive: yes
+    #     existing_only: yes
+    #   with_items:
+    #     - ".ssh/"
+    #     - "Desktop/"
+    #     - ".gitconfig"
+    #   ignore_errors: yes
+
+# ====================================================================================================================================

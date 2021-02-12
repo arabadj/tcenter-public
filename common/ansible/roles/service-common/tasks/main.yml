@@ -1,0 +1,31 @@
+---
+
+# ====================================================================================================================================
+
+# - name: Enable Services
+#   service: "name={{ item }} state=started enabled=yes"
+#   with_items:
+#     - chronyd.service
+#   ignore_errors: yes
+#   failed_when: false
+
+- name: Configure Services
+  service: "name={{ item }} state=stopped enabled=no"
+  with_items:
+    - rpcbind.service
+    - postfix.service
+    # - systemd-resolved.service
+    # - avahi-daemon.service
+    # - dnsmasq.service
+    # - cupsd.service
+  ignore_errors: yes
+  failed_when: false
+
+- name: Configure Services
+  service: "name={{ item }} state=stopped masked=yes"
+  with_items:
+    - firewalld.service
+  ignore_errors: yes
+  failed_when: false
+
+# ====================================================================================================================================

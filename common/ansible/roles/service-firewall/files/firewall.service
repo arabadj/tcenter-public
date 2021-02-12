@@ -1,0 +1,14 @@
+[Unit]
+Description=Firewall
+After=network.target
+BindsTo=network.target
+ReloadPropagatedFrom=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/firewall start
+ExecStop=/usr/local/sbin/firewall stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

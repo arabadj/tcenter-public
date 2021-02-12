@@ -1,0 +1,34 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - "@Workstation"
+      - "@Graphical Administration Tools"
+      - "@System Tools"
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - ubuntu-desktop
+      - xubuntu-desktop
+
+  when:
+    - (ansible_distribution == "Ubuntu") 
+
+# ====================================================================================================================================

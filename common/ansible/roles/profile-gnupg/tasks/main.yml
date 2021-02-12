@@ -1,0 +1,35 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Configure GnuPG Directory
+    file:
+      path: "~/.gnupg"
+      state: directory
+      mode: 0700
+
+  - name: Copy GnuPG Public Key
+    copy: 
+      src: "{{ artifacts }}/home/user/.gnupg/gpg_{{ ansible_deployer }}.pub"
+      dest: "~/.gnupg/"
+      mode: 0644
+
+  - name: Copy GnuPG Agent Config
+    copy: 
+      src: "{{ artifacts }}/home/user/.gnupg/gpg-agent.conf"
+      dest: "~/.gnupg/"
+      mode: 0644
+
+  - name: Copy GnuPG Private Key
+    copy: 
+      src: "{{ artifacts }}/home/user/.gnupg/gpg_{{ ansible_deployer }}.key"
+      dest: "~/.gnupg/"
+      mode: 0600
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+  ignore_errors: true
+
+# ====================================================================================================================================

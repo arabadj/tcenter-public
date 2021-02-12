@@ -1,0 +1,32 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+    - name: Configure Midnight Commander
+      copy:
+        src: "{{ item }}"
+        dest: "~/.config/mc/"
+        mode: 0644
+      with_items:
+        - "ini"
+        - "panels.ini"
+
+  ignore_errors: yes
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================
+
+- name: Configure Midnight Commander (root)
+  copy:
+    src: "{{ item }}"
+    dest: "~/.config/mc/"
+    mode: 0644
+  with_items:
+    - "ini"
+    - "panels.ini"
+  ignore_errors: yes
+
+# ====================================================================================================================================

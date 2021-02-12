@@ -1,0 +1,72 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Install Repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docer-ce.repo
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Repo Key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: Install Repo
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+      state: present
+
+  when:
+    - (ansible_distribution == "Ubuntu")
+
+# ====================================================================================================================================
+
+- name: Install Packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - containerd.io
+    - docker-ce
+
+- name: Install Packages (pip3)
+  pip:
+    executable: /usr/bin/pip3
+    name: [docker-compose, docker]
+    # state: latest
+
+- name: Configure User Groups
+  user:
+    name: "{{ ansible_deployer }}"
+    groups: docker
+    append: yes
+
+# ====================================================================================================================================
+
+- name: Enable Services
+  service: "name={{ item }} state=started enabled=yes"
+  with_items:
+    - docker.service
+  when:
+    - (service_state == true)
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- name: Disable Services
+  service: "name={{ item }} state=stopped enabled=no"
+  with_items:
+    - docker.service
+  when:
+    - (service_state == false)
+
+# ====================================================================================================================================

@@ -1,0 +1,36 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Configure Repos
+    copy: 
+      src: "{{ item }}"
+      dest: "/etc/yum.repos.d/"
+    with_fileglob:
+      - "CentOS-Linux-*.repo"
+
+  - name: Enable Fastestirror
+    copy: 
+      src: "CentOS-dnf.conf"
+      dest: "/etc/dnf/dnf.conf"
+
+  when:
+    - (ansible_distribution == "CentOS") 
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Configure Repos
+    copy: 
+      src: "{{ item }}"
+      dest: "/etc/yum.repos.d/"
+    with_fileglob:
+      - "oracle-linux-ol8.repo"
+
+  when:
+    - (ansible_distribution == "OracleLinux") 
+
+# ====================================================================================================================================

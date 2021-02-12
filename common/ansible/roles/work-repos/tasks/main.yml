@@ -1,0 +1,21 @@
+---
+
+# ====================================================================================================================================
+
+    - name: Configure Facts
+      set_fact: 
+        repo_owner: "repo_owner"
+
+    - name: Checkout Repositories
+      git:
+        repo: "https://github.com/{{ repo_owner }}/{{ item }}.git"
+        dest: "~/work/{{ item }}"
+        accept_hostkey: yes
+      with_items:
+        - "repository-1"
+        - "repository-2"
+        - "repository-3"
+      ignore_errors: true
+      failed_when: false
+
+# ====================================================================================================================================

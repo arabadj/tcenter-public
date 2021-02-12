@@ -1,0 +1,33 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Secure Directory 
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0700
+    with_items:
+      - "~/.ssh"
+
+  - name: Configure SSH
+    copy: 
+      src: "{{ artifacts }}/home/user/.ssh/config"
+      dest: "~/.ssh/"
+      mode: 0600
+
+  - name: Copy Public Keys
+    copy:
+      src: "{{ item }}"
+      dest: "~/.ssh/"
+      mode: 0644
+    with_fileglob:
+      - "{{ artifacts }}/home/user/.ssh/id_rsa_*.pub"
+
+  ignore_errors: yes
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

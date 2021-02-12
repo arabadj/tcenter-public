@@ -1,0 +1,8 @@
+GRUB_TIMEOUT=1
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="no_timer_check crashkernel=auto resume=/dev/mapper/ol_oracle8-swap rd.lvm.lv=ol_oracle8/root rd.lvm.lv=ol_oracle8/swap biosdevname=0 net.ifnames=0 rhgb quiet ipv6.disable=1"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true

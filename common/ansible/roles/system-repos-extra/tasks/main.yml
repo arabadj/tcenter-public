@@ -1,0 +1,31 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Install Repos
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - epel-release
+
+  when:
+    - (ansible_distribution == "CentOS") 
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Repos
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - "https://download.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
+
+  when:
+    - (ansible_distribution == "OracleLinux") 
+
+# ====================================================================================================================================

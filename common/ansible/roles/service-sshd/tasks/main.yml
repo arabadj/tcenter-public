@@ -1,0 +1,25 @@
+---
+
+# ====================================================================================================================================
+
+- name: Configure SSHD Service
+  template:
+    src: "sshd_config.{{ ansible_distribution }}.j2"
+    dest: "/etc/ssh/sshd_config"
+    owner: root
+    group: root
+    mode: 0600
+  register: sshd_config
+
+- name: Restart SSHD Service
+  service: name=sshd state=restarted
+  when:
+    - sshd_config.changed
+
+- name: Configure SSH Client
+  copy:
+    src: "08-custom.conf"
+    dest: "/etc/ssh/ssh_config.d/"
+    mode: 0644
+
+# ====================================================================================================================================

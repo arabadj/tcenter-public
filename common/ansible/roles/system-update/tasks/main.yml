@@ -1,0 +1,56 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Update System
+    yum:
+      name: "*"
+      state: latest
+      update_cache: yes
+
+  - name: Needs Reboot?
+    shell: |
+      needs-restarting -r
+    failed_when: false
+    register: reboot_rhel
+    changed_when:
+      - (reboot_rhel.stdout is search("Reboot is required"))
+ 
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Update Cache
+    apt: 
+      update_cache: yes
+    changed_when: false
+
+  - name: Upgrade System
+    apt:
+      upgrade: yes
+
+  - name: Needs Reboot?
+    stat:
+      path: "/var/run/reboot-required"
+    register: reboot_ubuntu
+    changed_when:
+      - (reboot_ubuntu.stat.exists)
+
+  when:
+    - (ansible_distribution == "Ubuntu") 
+
+# ====================================================================================================================================
+
+- name: Reboot System
+  reboot:
+    reboot_timeout: 3600
+    msg: "Rebooting System..."
+  when:
+    - (reboot_rhel.changed or reboot_ubuntu.changed)
+
+# ====================================================================================================================================

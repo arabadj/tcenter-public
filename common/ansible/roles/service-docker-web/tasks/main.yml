@@ -1,0 +1,105 @@
+---
+
+# ====================================================================================================================================
+
+- name: Reset SSH Connection
+  meta: reset_connection
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Inquiry Service
+    docker_container_info:
+      name: "{{ service_name }}_svc_1"
+    register: service_inquiry
+
+  - name: Check Service State
+    debug:
+      msg: |
+        "Exists: {{ service_inquiry.exists }}"
+        "Failed: {{ service_inquiry.failed }}"
+
+  # ------------------------------------------------------------------------------------------------------------------------------------
+
+  - block:
+
+    - name: Create Directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      with_items:
+        - "{{ service_dir }}"
+        - "{{ service_dir }}/var"
+
+    - name: Copy Content
+      copy: 
+        src: "."
+        dest: "{{ service_dir }}/var"
+        mode: 0644
+
+    - name: Copy Compese
+      template:
+        src: "docker-compose.yml.j2"
+        dest: "{{ service_dir }}/docker-compose.yml"
+        mode: 0644
+      register: service_compose
+
+    - name: Compose Service
+      docker_compose:
+        project_name: "{{ service_name }}"
+        project_src: "{{ service_dir }}"
+        recreate: always
+        state: present
+        remove_orphans: yes
+      register: service_create
+      when:
+        - (service_compose.changed or not service_inquiry.exists or service_inquiry.failed)
+
+    - name: Inquiry Service
+      docker_container_info:
+        name: "{{ service_name }}_svc_1"
+      register: service_inquiry
+
+    - name: Service State
+      debug:
+        msg: "{{ service_inquiry.container.State }}"
+
+    when:
+      - (service_state == true)
+
+  # ------------------------------------------------------------------------------------------------------------------------------------
+
+  - block:
+
+    - name: Stat Compose
+      stat:
+        path: "{{ service_dir }}/docker-compose.yml"
+      register: service_compose
+
+    - name: Destroy Service
+      docker_compose:
+        project_name: "{{ service_name }}"
+        project_src: "{{ service_dir }}"
+        state: absent
+        remove_orphans: yes
+      register: service_destroy
+      when:
+        - (service_compose.stat.exists)
+
+    - name: Destroy Directories
+      file:
+        path: "{{ item }}"
+        state: absent
+        mode: 0755
+      with_items:
+        - "{{ service_dir }}"
+
+    when:
+      - (service_state == false)
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

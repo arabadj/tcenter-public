@@ -1,0 +1,23 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Configure Git
+    copy: 
+      src: "{{ artifacts }}/home/user/.gitconfig"
+      dest: "~/"
+      mode: 0644
+
+  - name: Configure Git Credentials
+    copy: 
+      src: "{{ artifacts }}/home/user/.git-credentials"
+      dest: "~/"
+      mode: 0600
+
+  ignore_errors: yes
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

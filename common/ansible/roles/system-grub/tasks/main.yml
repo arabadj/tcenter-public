@@ -1,0 +1,42 @@
+---
+
+# ====================================================================================================================================
+
+- name: Configure Grub
+  copy:
+    src: "grub.{{ ansible_distribution }}"
+    dest: "/etc/default/grub"
+    owner: root
+    group: root
+    mode: 0644
+  register: grub_default
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+  
+  - name: Needs Reboot?
+    shell: /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
+    register: reboot_rhel
+    when:
+      - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+  - name: Needs Reboot?
+    shell: /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg
+    register: reboot_ubuntu
+    when:
+      - (ansible_distribution == "Ubuntu") 
+
+  when:
+    - (grub_default.changed)
+
+# ====================================================================================================================================
+
+- name: Reboot System
+  reboot:
+    reboot_timeout: 3600
+    msg: "Rebooting System..."
+  when:
+    - (reboot_rhel.changed or reboot_ubuntu.changed)
+
+# ====================================================================================================================================

@@ -1,0 +1,117 @@
+---
+# ====================================================================================================================================
+
+- block:
+
+  - name: Define Viriables
+    set_fact:
+      vboxadd_version: "{{ lookup('env','VIRTUALBOX_VERSION') }}"
+      downloads: "~/install"
+      mountpoint: "/media/VBoxGuestAdditions"
+
+  - name: Needs VBoxGuestAdditions?
+    shell: /usr/sbin/VBoxService --version 2> /dev/null | cut -d "r" -f 1
+    failed_when: false
+    register: vboxadd_install
+    changed_when:
+      - (vboxadd_install.stdout is not search(vboxadd_version))
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gcc
+      - kernel-devel
+      - kernel-headers
+      - dkms
+      - make
+      - bzip2
+      - perl
+
+  - block:
+
+    - name: Create Directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ downloads }}"
+        - "{{ mountpoint }}"
+
+    - name: Download VBoxGuestAdditions
+      get_url:
+        url: "http://download.virtualbox.org/virtualbox/{{ vboxadd_version }}/VBoxGuestAdditions_{{ vboxadd_version }}.iso"
+        dest: "{{ downloads }}/"
+
+    - name: Mount VBoxGuestAdditions
+      mount:
+        path: "{{ mountpoint }}"
+        src: "{{ downloads }}/VBoxGuestAdditions_{{ vboxadd_version }}.iso"
+        fstype: iso9660
+        opts: loop,ro
+        state: mounted
+
+    - name: Install VBoxGuestAdditions
+      shell: sh {{ mountpoint }}/VBoxLinuxAdditions.run --nox11
+      failed_when: false
+      register: reboot_rhel
+
+    - name: Umount VBoxGuestAdditions
+      mount:
+        path: "{{ mountpoint }}"
+        src: "{{ downloads }}/VBoxGuestAdditions_{{ vboxadd_version }}.iso"
+        fstype: iso9660
+        state: absent
+
+    - name: Remove Directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ downloads }}/VBoxGuestAdditions_{{ vboxadd_version }}.iso"
+        - "{{ mountpoint }}"
+
+    when:
+      - (vboxadd_install.changed)
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - linux-cloud-tools-generic
+      - linux-tools-generic
+      - linux-headers-generic
+      - dkms
+      - build-essential
+
+  - name: Install VBoxGuestAdditions
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - virtualbox-guest-dkms
+      - virtualbox-guest-utils
+    register: reboot_ubuntu
+
+  when:
+    - (ansible_distribution == "Ubuntu") 
+
+# ====================================================================================================================================
+
+- name: Reboot System
+  reboot:
+    reboot_timeout: 3600
+    msg: "Rebooting System..."
+  when:
+    - (reboot_rhel.changed or reboot_ubuntu.changed)
+
+# ====================================================================================================================================

@@ -1,0 +1,46 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Define Viriables
+    set_fact:
+      bindir: "~/.local/bin"
+      downloads: "~/install"
+      version: "1.6.1"
+
+  - name: Create Directory 
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+    with_items:
+      - "{{ bindir }}"
+      - "{{ downloads }}"
+
+  - name: Stat Packer
+    stat:
+      path: "{{ bindir }}/packer"
+    register: packer
+
+  - name: Download Packer
+    get_url:
+      url: "https://releases.hashicorp.com/packer/{{ version }}/packer_{{ version }}_linux_amd64.zip"
+      dest: "{{ downloads }}/"
+    when:
+      - (not packer.stat.exists)
+
+  - name: Install Packer
+    shell: |
+      unzip {{ downloads }}/packer_{{ version }}_linux_amd64.zip -d {{ bindir }}/
+    args:
+      warn: no
+      chdir: "/home/{{ ansible_deployer }}"
+    when:
+      - (not packer.stat.exists)
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

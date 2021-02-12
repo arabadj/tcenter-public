@@ -1,0 +1,76 @@
+---
+
+# ====================================================================================================================================
+
+- name: Configure Root
+  user:
+    name: root
+    password: $6$.5DNvyZdAmWlDdAR$Pubf5z2O4ZCR/0WHBY1VOtLMNVnrehQqqdmNJ6sv8pskVHyWVUFgn48YABXX4oE2nAea73Z3wIip2nelXNylt1
+
+- name: Configure Root Key
+  authorized_key:
+    user: root
+    key: "{{ item }}"
+    state: present
+    exclusive: True
+  with_file:
+    - "{{ artifacts }}/home/user/.ssh/id_rsa_{{ ansible_deployer }}.pub"
+
+- name: Configure User
+  user:
+    name: "{{ ansible_deployer }}"
+    shell: /bin/bash
+    password: $6$.5DNvyZdAmWlDdAR$Pubf5z2O4ZCR/0WHBY1VOtLMNVnrehQqqdmNJ6sv8pskVHyWVUFgn48YABXX4oE2nAea73Z3wIip2nelXNylt1
+
+- name: Configure User Key
+  authorized_key:
+    user: "{{ ansible_deployer }}"
+    key: "{{ item }}"
+    state: present
+    exclusive: True
+  with_file:
+    - "{{ artifacts }}/home/user/.ssh/id_rsa_{{ ansible_deployer }}.pub"
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Configure User Groups
+    user:
+      name: "{{ ansible_deployer }}"
+      groups: wheel
+      append: yes
+
+  - name: Configure Sudoers 
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: "^%wheel"
+      line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+      validate: "visudo -cf %s"
+
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- block:
+
+  - name: Configure User Groups
+    user:
+      name: "{{ ansible_deployer }}"
+      groups: sudo,adm,cdrom,floppy,audio,dip,video,plugdev,netdev,lxd
+      append: yes
+
+  - name: Configure Sudoers  
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: "^%sudo"
+      line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+      validate: "visudo -cf %s"
+
+  when:
+    - (ansible_distribution == "Ubuntu")
+
+# ====================================================================================================================================

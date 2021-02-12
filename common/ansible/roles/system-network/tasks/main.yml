@@ -1,0 +1,27 @@
+---
+
+# ====================================================================================================================================
+
+- name: Geathering Information
+  shell: |
+    echo "."
+    echo "Network Information:"
+    echo "--------------------"
+    echo IP: $(ip addr ls | grep global | awk '{print $2" "}' | cut -d "/" -f 1)
+    echo GW: $(ip route ls | head -1 | awk '{print $3}')
+    echo "."
+    echo "."
+    echo "Firewall Information:"
+    echo "---------------------"
+    iptables -L INPUT -nv
+    echo "."
+  failed_when: false
+  changed_when: false
+  register: information_network
+
+- name: Network Information
+  debug:
+    msg: 
+      - "{{ information_network.stdout }}"       
+
+# ====================================================================================================================================

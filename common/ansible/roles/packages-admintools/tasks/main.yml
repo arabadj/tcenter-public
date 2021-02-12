@@ -1,0 +1,61 @@
+---
+
+# ====================================================================================================================================
+
+- name: Install Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bash-completion
+    - zip
+    - unzip
+    - figlet
+    - mc
+    - psmisc
+    - tree
+    - htop
+    - rsync
+    - links
+    - lynx
+    - jq
+    - net-tools
+    - traceroute
+    - telnet
+    - tcpdump
+    - nmap
+    - mtr
+    - whois
+    - conntrack
+    - hping3
+    - iperf3
+    - iptraf
+    - iftop
+    - nethogs
+    - bmon
+
+# ====================================================================================================================================
+
+- name: Install Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum-utils
+    - bind-utils
+  when:
+    - (ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- name: Install Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - dnsutils
+  when:
+    - (ansible_distribution == "Ubuntu")
+
+# ====================================================================================================================================
+

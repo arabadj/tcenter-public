@@ -1,0 +1,27 @@
+
+{
+  "variables": {
+    "packer_build_source": "{{env `PACKER_BUILD_SOURCE`}}",
+    "packer_build_version": "{{env `PACKER_BUILD_VERSION`}}",
+    "packer_build_ouyput": "{{env `PACKER_BUILD_OUTPUT`}}",
+    "plays_root": "{{env `PLAYS_ROOT`}}"
+  },
+"builders": [
+      {
+        "type": "vagrant",
+        "provider": "virtualbox",
+        "communicator": "ssh",
+        "source_path": "{{user `packer_build_source`}}",
+        "box_version": "{{user `packer_build_version`}}",
+        "output_dir": "{{user `packer_build_ouyput`}}"
+      }
+    ],
+    "provisioners" : [
+      {
+        "type" : "ansible",
+        "playbook_file" : "{{user `plays_root`}}/playbook.yml",
+        "max_retries": 10,
+        "pause_before": "10s"
+      }
+    ]
+  }

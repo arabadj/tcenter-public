@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+
+  svc:
+    image: arabadj/centos-httpd:8.2.2004-1.0.1
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - "{{ service_dir }}/var:/var/www/html:ro"
+

@@ -1,0 +1,133 @@
+---
+
+# ====================================================================================================================================
+
+- name: PRULLCONFIG
+  hosts: localhost
+  connection: local
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  vars_files: variables.yml
+  gather_facts: true
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+  
+# ====================================================================================================================================
+
+  tasks:
+
+# ====================================================================================================================================
+
+    - name: Create Directory
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ home_win }}/.ssh"
+        - "{{ home_win }}/.ssh/Archive"
+        - "{{ home_win }}/VirtualBox"
+        - "{{ home_win }}/Work/build"
+        - "{{ home_win }}/Work/projects"
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Duplicate Artifacts
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ artifacts }}/win/Users/user/.ssh/"
+      with_items:
+        - "{{ artifacts }}/home/user/.ssh/authorized_keys"
+        - "{{ artifacts }}/home/user/.ssh/config"
+
+    - name: Clean Files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ home_win }}/.ssh/known_hosts"
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Copy SSH Config
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/.ssh/"
+        mode: 0644
+      with_items:
+        - "{{ artifacts }}/win/Users/user/.ssh/authorized_keys"
+        - "{{ artifacts }}/win/Users/user/.ssh/config"
+
+    - name: Copy SSH Public
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/.ssh/"
+        mode: 0644
+      with_fileglob:
+        - "{{ artifacts }}/win/Users/user/.ssh/*.pub"
+
+    - name: Copy SSH Private
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/.ssh/"
+        mode: 0600
+      with_fileglob:
+        - "{{ artifacts }}/win/Users/user/.ssh/*.key"
+        - "{{ artifacts }}/win/Users/user/.ssh/*.pem"
+        - "{{ artifacts }}/win/Users/user/.ssh/*.ppk"
+
+    - name: Copy SSH Archive
+      copy: 
+        src: "{{ artifacts }}/win/Users/user/.ssh/Archive"
+        dest: "{{ home_win }}/.ssh/"
+        mode: "preserve"
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Copy GnuPG
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/.gnupg/"
+        mode: "preserve"
+      with_fileglob:
+        - "{{ artifacts }}/win/Users/user/.gnupg/"
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Copy Config Files
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/"
+        mode: "preserve"
+      with_fileglob:
+        - "{{ artifacts }}/win/Users/user/.gitconfig"
+        - "{{ artifacts }}/win/Users/user/settings.json"
+
+    - name: Copy Config Directories
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/"
+        mode: "preserve"
+      with_items:
+        - "{{ artifacts }}/win/Users/user/.gnupg"
+        - "{{ artifacts }}/win/Users/user/Desktop"
+
+# ====================================================================================================================================
+
+    # - name: Create Directory
+    #   file:
+    #     path: "{{ item }}"
+    #     state: directory
+    #   with_items:
+    #     - "/mnt/c/totalcmd"
+
+    # - name: Copy Totalcmd
+    #   copy: 
+    #     src: "{{ artifacts }}/win/totalcmd/"
+    #     dest: "/mnt/c/totalcmd/"
+    #     mode: "preserve"
+
+# ====================================================================================================================================

@@ -1,0 +1,56 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Configure Bashrc
+    vars:
+      - color: "32"
+    template:
+      src: ".bashrc.user.j2"
+      dest: "~/.bashrc"
+      mode: 0644
+
+  - name: Create Directory 
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "~/.local/bin"
+      - "~/.local/etc"
+      - "~/.local/opt"
+      - "~/.local/var"
+      - "~/install"
+      - "~/work"
+
+  - name: Secure Directory 
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0700
+    with_items:
+      - "/home/{{ ansible_deployer }}"
+
+  - name: Hash Login
+    file:
+      path: "/home/{{ ansible_deployer }}/.hushlogin"
+      state: touch
+      modification_time: preserve
+      access_time: preserve
+      mode: 0644
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================
+
+- name: Configure Bashrc (root)
+  vars:
+    - color: "31"
+  template:
+    src: ".bashrc.root.j2"
+    dest: "~/.bashrc"
+    mode: 0644
+
+# ====================================================================================================================================

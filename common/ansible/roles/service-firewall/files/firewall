@@ -1,0 +1,29 @@
+#!/bin/bash
+
+start() {
+    iptables -F INPUT
+    iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A INPUT -i lo -j ACCEPT
+    iptables -A INPUT -p icmp -j ACCEPT
+    iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+    iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+    iptables -A INPUT -i eth2 -j DROP
+}
+
+stop() {
+    iptables -F INPUT
+}
+
+case  $1 in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    *)
+        echo "options: start | stop | restart"
+        ;;
+esac
+
+exit 0

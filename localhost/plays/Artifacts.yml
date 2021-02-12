@@ -1,0 +1,58 @@
+---
+
+# ====================================================================================================================================
+
+- name: ARTIFACTS
+  hosts: localhost
+  connection: local
+  
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  vars_files: variables.yml  
+  gather_facts: true
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  become: true
+  become_user: "{{ ansible_deployer }}"
+  
+# ====================================================================================================================================
+
+  tasks:
+
+# ====================================================================================================================================
+
+    - name: Create Directory
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ artifacts }}/home"
+        - "{{ artifacts }}/home/user"
+        - "{{ artifacts }}/home/user/.ssh"
+        - "{{ artifacts }}/root"
+        - "{{ artifacts }}/win"
+        - "{{ artifacts }}/win"
+        - "{{ artifacts }}/win/Users"
+        - "{{ artifacts }}/win/Users/user"
+        - "{{ artifacts }}/win/Users/user/.ssh"
+        - "{{ artifacts }}/win/Users/user/Desktop"
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Touch Files
+      file:
+        path: "{{ item }}"
+        state: touch
+        modification_time: preserve
+        access_time: preserve
+      with_items:
+        - "{{ artifacts }}/home/user/.gitconfig"
+        - "{{ artifacts }}/home/user/.git-credentials"
+        - "{{ artifacts }}/home/user/.ssh/config"
+        - "{{ artifacts }}/home/user/.ssh/authorized_keys"
+        - "{{ artifacts }}/win/Users/user/.gitconfig"
+        - "{{ artifacts }}/win/Users/user/.ssh/config"
+        - "{{ artifacts }}/win/Users/user/.ssh/authorized_keys"
+
+# ====================================================================================================================================

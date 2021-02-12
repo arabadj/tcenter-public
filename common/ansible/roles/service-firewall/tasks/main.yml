@@ -1,0 +1,52 @@
+---
+
+# ====================================================================================================================================
+
+- name: Install Firewall
+  copy:
+    src: "firewall.service"
+    dest: "/etc/systemd/system/"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure Firewall
+  copy:
+    src: "firewall"
+    dest: "/usr/local/sbin/"
+    owner: root
+    group: root
+    mode: 0755
+  register: service_configuration
+
+# ====================================================================================================================================
+
+- block:
+
+  - name: Enable Services
+    service: "name={{ item }} state=started enabled=yes"
+    with_items:
+      - firewall.service
+    when:
+      - (not service_configuration.changed)
+
+  - name: Restart Services
+    service: "name={{ item }} state=restarted enabled=yes"
+    with_items:
+      - firewall.service
+    when:
+      - (service_configuration.changed)
+
+  when:
+    - (service_state == true)
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+- name: Disable Services
+  service: "name={{ item }} state=stopped enabled=no"
+  with_items:
+    - firewall.service
+  when:
+    - (service_state == false)
+
+# ====================================================================================================================================

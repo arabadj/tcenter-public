@@ -1,0 +1,17 @@
+---
+
+# ====================================================================================================================================
+
+- name: Install Packages (pip3)
+  pip:
+    executable: /usr/bin/pip3
+    name: [jinja2-cli, j2cli]
+    # state: latest
+
+- name: Install Packages (pip3)
+  pip:
+    executable: /usr/bin/pip3
+    name: [botocore, boto, boto3]
+    # state: latest
+
+# ====================================================================================================================================

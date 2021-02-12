@@ -1,0 +1,35 @@
+---
+
+# ====================================================================================================================================
+
+- block:
+
+    - name: Stat Gbin Directory
+      stat:
+        path: "~/.local/gbin/.git"
+      register: gbin_repo
+
+    - name: Remove Gbin Directory
+      file:
+        path: "~/.local/gbin"
+        state: absent
+      register: gbin
+      when:
+        - (not gbin_repo.stat.exists)
+
+    - name: Configure Gbin Facts
+      set_fact: 
+        repo_owner: "arabadj"
+        repo_name: "gbin"
+
+    - name: Checkout Gbin Repository
+      git:
+        repo: "https://github.com/{{ repo_owner }}/{{ repo_name }}.git"
+        dest: "~/.local/{{ repo_name }}"
+        accept_hostkey: yes
+
+  ignore_errors: true
+  become: true
+  become_user: "{{ ansible_deployer }}"
+
+# ====================================================================================================================================

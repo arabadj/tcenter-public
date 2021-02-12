@@ -1,0 +1,28 @@
+#!/bin/bash
+
+docker_ps=$(docker ps -aq)
+if [ ! -z "$docker_ps" ]; then
+    for i in $docker_ps; do
+        docker rm -f $i
+    done
+fi
+docker_volume=$(docker volume ls | grep -v VOLUME | awk '{print $2}')
+if [ ! -z "$docker_volume" ]; then
+    for i in $docker_volume; do
+        docker volume rm -f $i
+    done
+fi
+docker_image=$(docker image ls | grep -v REPOSITORY | awk '{print $3}')
+if [ ! -z "$docker_image" ]; then
+    for i in $docker_image; do
+        docker image rm -f $i
+    done
+fi
+docker_network=$(docker network ls | awk '{print $1"\t"$2}' | grep -v NETWORK | grep -v bridge | grep -v host | grep -v none | awk '{print $1}')
+if [ ! -z "$docker_network" ]; then
+    for i in $docker_network; do
+        docker network rm $i
+    done
+fi
+
+echo "Done!"

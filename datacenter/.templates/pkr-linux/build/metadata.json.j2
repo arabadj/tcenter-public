@@ -1,0 +1,16 @@
+  
+  {
+    "name": "local/{{ PACKER_DISTRO_NAME }}",
+    "description": "Tcenter generated box",
+    "versions": [
+      {
+        "version": "{{ PACKER_BUILD_VERSION }}",
+        "providers": [
+          {
+            "name": "virtualbox",
+            "url": "file://{{ PACKER_BUILD_BOX }}"
+          }
+        ]
+      }
+    ]
+  }
