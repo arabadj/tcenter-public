@@ -39,6 +39,8 @@ function print_usage () {
     echo "        tcenter-$DEPLOYMENT actions <name>"
     echo "        tcenter-$DEPLOYMENT provision <name>"
     echo "        tcenter-$DEPLOYMENT remove <name>"
+    echo "        tcenter-$DEPLOYMENT link"
+    echo "        tcenter-$DEPLOYMENT unlink"
     echo ""
 }
 
@@ -72,14 +74,17 @@ function vgr_instance_list () {
     for i in $(ls -l "$DATACENTER_ROOT" | awk '{print $9}'); do
         if [ -d "$i" ]; then
             t=""
+            s=""
             export LOCAL_ROOT="$DATACENTER_ROOT/$i"
+            [ ! -z "$(file $LOCAL_ROOT | grep "symbolic link")" ] && export s="^"
             source $LOCAL_ROOT/local.env
             INSTANCE_STATUS="$(/mnt/c/Program\ Files/Oracle/VirtualBox/VBoxManage.exe showvminfo $i 2>/dev/null | grep "State" | cut -d "(" -f 1 | awk '{print $2" "$3}')"
             if [ -z "$INSTANCE_STATUS" ]; then
                 INSTANCE_STATUS="-"
             fi
             [ "$(echo -n "$VAGRANT_IMAGE_NAME" | wc -c)" -le "18" ] && t=$'\t'
-            echo "$i" $'\t\t' "$VAGRANT_INSTANCE_NAME" $'\t\t' "$VAGRANT_IPADDR_PRIVATE" $'\t\t' "$VAGRANT_IMAGE_NAME$t" $'\t' "$INSTANCE_STATUS"
+            echo "$i$s" $'\t\t' "$VAGRANT_INSTANCE_NAME" $'\t\t' "$VAGRANT_IPADDR_PRIVATE" $'\t\t' "$VAGRANT_IMAGE_NAME$t" $'\t' "$INSTANCE_STATUS"
+            s=""
         fi
     done
     t=""
@@ -190,6 +195,24 @@ function vgr_instance_edit () {
     fi
 }
 
+function vgr_instance_unlink () {
+    for i in $(ls -l "$DATACENTER_ROOT" | awk '{print $9}'); do
+        if [ -d "$i" ]; then
+            if [ ! -z "$(file $DATACENTER_ROOT/$i | grep "symbolic link")" ]; then
+              rm -f "$DATACENTER_ROOT/$i"
+            fi
+        fi
+    done
+}
+
+function vgr_instance_link () {
+    for i in $(ls -l "$DATACENTER_SHARED" | awk '{print $9}'); do
+        if [ -d "$DATACENTER_SHARED/$i" ]; then
+            ln -s "$DATACENTER_SHARED/$i" $DATACENTER_ROOT/$i
+        fi
+    done
+}
+
 #===========================================================================================================================
 
 cd "$DATACENTER_ROOT"
@@ -199,9 +222,14 @@ INSTANCE_NAME="$2"
 INSTANCE_ACTION="$1"
 
 case  $1 in
-    # "localhost")
-    #     localhost_actions_list
-    #     ;;
+    "link")
+        vgr_instance_link
+        vgr_instance_list
+        ;;
+    "unlink")
+        vgr_instance_unlink
+        vgr_instance_list
+        ;;
     "ssh")
         ssh $INSTANCE_NAME
         ;;
