@@ -223,6 +223,7 @@ INSTANCE_ACTION="$1"
 
 case  $1 in
     "link")
+        vgr_instance_unlink
         vgr_instance_link
         vgr_instance_list
         ;;
