@@ -2,6 +2,7 @@
 
 # ====================================================================================================================================
 
+deployment: "{{ lookup('env','DEPLOYMENT') }}"
 global_root: "{{ lookup('env','GLOBAL_ROOT') }}"
 local_root: "{{ lookup('env','LOCAL_ROOT') }}"
 ansible_deployer: "{{ lookup('env','ANSIBLE_DEPLOYER') }}"

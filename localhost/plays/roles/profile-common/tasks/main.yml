@@ -40,6 +40,12 @@
       access_time: preserve
       mode: 0644
 
+  - name: Link Tcenter
+    file:
+      src: "{{ global_root }}/tcenter"
+      dest: "~/.local/bin/tcenter-{{ deployment }}"
+      state: link
+
   become: true
   become_user: "{{ ansible_deployer }}"
 

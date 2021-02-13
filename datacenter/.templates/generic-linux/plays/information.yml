@@ -1,0 +1,67 @@
+---
+
+# ====================================================================================================================================
+
+- name: INFORMATION
+  hosts: all
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  vars_files: variables.yml
+  gather_facts: true
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+  become: true
+  become_user: root
+  
+# ====================================================================================================================================
+
+  tasks:
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    - name: Host Information
+      debug:
+        msg: 
+          - "User:          {{ ansible_user }}"        
+          - "Hostname:      {{ ansible_hostname }}"
+          - "Distribution:  {{ ansible_distribution }}"
+          - "Major Version: {{ ansible_distribution_major_version }}"
+          - "Version:       {{ ansible_distribution_version }}"
+          - "Release:       {{ ansible_distribution_release }}"
+      when: 
+        # - ansible_distribution != "CentOS" and ansible_distribution != "OracleLinux"
+        # - ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux"
+        # - ansible_distribution == "CentOS"
+        # - ansible_distribution == "OracleLinux"
+        # - ansible_distribution == "Ubuntu"
+        # - ansible_distribution_version < '7'
+        # - ansible_distribution_major_version == '6'
+
+
+    - name: Network Information
+      shell: |
+        echo "."
+        echo "Network Information:"
+        echo "--------------------"
+        echo IP: $(ip addr ls | grep global | awk '{print $2" "}' | cut -d "/" -f 1)
+        echo GW: $(ip route ls | head -1 | awk '{print $3}')
+        echo "."
+        echo "."
+        echo "Firewall Information:"
+        echo "---------------------"
+        iptables -L INPUT -nv
+        echo "."
+      failed_when: false
+      changed_when: false
+      register: information_network
+
+    - name: Network Information
+      debug:
+        msg: 
+          - "{{ information_network.stdout }}"       
+
+# ====================================================================================================================================
+
+

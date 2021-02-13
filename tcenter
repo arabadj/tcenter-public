@@ -1,16 +1,20 @@
 #!/bin/bash
 
 #===========================================================================================================================
+
+REALPATH="$(realpath $0)"
+BASENAME="$(basename $REALPATH)"
+DIRNAME="$(dirname $REALPATH)"
+
+cd $DIRNAME
+
+#===========================================================================================================================
 while [ -z "$GLOBAL_ROOT" ]; do
     [ -f ./global.env ] && export GLOBAL_ROOT=$(pwd) && source ./global.env
     [ "$(pwd)" == "/" ] && echo "Unknown \$GLOBAL_ROOT, terminating..." && exit 0; cd ..; done
 for FUNCTION in $(cat $GLOBAL_ROOT/global.env | grep "^function" | awk '{print $2}'); do 
     export -f $FUNCTION; done
 #===========================================================================================================================
-
-REALPATH="$(realpath $0)"
-BASENAME="$(basename $REALPATH)"
-DIRNAME="$(dirname $REALPATH)"
 
 if [ -x /usr/bin/figlet ]; then
     ECHO="/usr/bin/figlet"
@@ -27,7 +31,14 @@ echo ""
 
 function print_usage () {
     echo ""
-    echo "Usage: $BASENAME action|templates|new|edit|remove name [template]"
+    echo "Usage:"
+    echo "        tcenter-$DEPLOYMENT list"
+    echo "        tcenter-$DEPLOYMENT templates"
+    echo "        tcenter-$DEPLOYMENT new <name> <template>"
+    echo "        tcenter-$DEPLOYMENT edit <name>"
+    echo "        tcenter-$DEPLOYMENT actions <name>"
+    echo "        tcenter-$DEPLOYMENT provision <name>"
+    echo "        tcenter-$DEPLOYMENT remove <name>"
     echo ""
 }
 
@@ -48,7 +59,7 @@ function localhost_instance () {
         echo ""
         localhost_actions_list
         echo ""
-        print_usage
+        # print_usage
         echo ""
     fi
 }
@@ -74,7 +85,7 @@ function vgr_instance_list () {
     t=""
     [ "$(echo -n "$VAGRANT_IMAGE_NAME" | wc -c)" -le "17" ] && t=$'\t'
     echo "localhost" $'\t\t' "$HOSTNAME$t" "127.0.0.1" $'\t\t' "$WSL_DISTRO_NAME"
-    print_usage
+    # print_usage
     echo ""
 }
 
@@ -98,7 +109,7 @@ function vgr_instance () {
         $DATACENTER_ROOT/$INSTANCE_NAME/runs/$INSTANCE_ACTION.sh 2>/dev/null
     else
         echo ""
-        echo "Instance \"$INSTANCE_NAME/runs\" Actions:"
+        echo "Instance \"$INSTANCE_NAME\" Actions:"
         echo ""
         vgr_instance_actions_list
         echo ""
@@ -150,9 +161,10 @@ function vgr_instance_new () {
 function vgr_instance_remove () {
     if [ -z "$INSTANCE_NAME" ] || [ ! -d "$DATACENTER_ROOT/$INSTANCE_NAME" ]; then
         echo ""
-        echo "Instance name is wrong or missing..."
+        echo "Wrong usage!!!"
         echo ""
         vgr_instance_list
+        print_usage
         echo ""
     else
         "$DATACENTER_ROOT/$INSTANCE_NAME/runs/destroy.sh" && rm -rf "$DATACENTER_ROOT/$INSTANCE_NAME"
@@ -166,9 +178,10 @@ function vgr_instance_remove () {
 function vgr_instance_edit () {
     if [ -z "$INSTANCE_NAME" ] || [ ! -d "$DATACENTER_ROOT/$INSTANCE_NAME" ]; then
         echo ""
-        echo "Instance name is wrong or missing..."
+        echo "Wrong usage!!!"
         echo ""
         vgr_instance_list
+        print_usage
         echo ""
     else
         vi "$DATACENTER_ROOT/$INSTANCE_NAME/local.env"
@@ -186,9 +199,9 @@ INSTANCE_NAME="$2"
 INSTANCE_ACTION="$1"
 
 case  $1 in
-    "localhost")
-        localhost_action
-        ;;
+    # "localhost")
+    #     localhost_actions_list
+    #     ;;
     "ssh")
         ssh $INSTANCE_NAME
         ;;
@@ -206,6 +219,7 @@ case  $1 in
         ;;
     "")
         vgr_instance_list
+        print_usage
         ;;
     "list")
         vgr_instance_list
@@ -215,7 +229,11 @@ case  $1 in
         echo ""
         ;;
     *)
-        if [ "$INSTANCE_NAME" == "localhost" ]; then
+        if [ "$INSTANCE_NAME" == "" ]; then
+            echo "Wrong usage!!!"
+            vgr_instance_list
+            print_usage
+        elif [ "$INSTANCE_NAME" == "localhost" ]; then
             localhost_instance $INSTANCE_ACTION
         else
             vgr_instance $INSTANCE_ACTION $INSTANCE_NAME

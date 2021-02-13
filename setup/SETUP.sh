@@ -7,6 +7,10 @@ exit 0
 # !!! DO NOT RUN THIS BLINDLY !!! 
 # !!! THESE ARE HINTS ONLY !!! 
 
+#===Fork====================================================================================================================
+
+# !!! FORK THIS REPO WITH THE SAME NAME !!!
+
 #===Files===================================================================================================================
 
 # Export Variables
@@ -183,17 +187,16 @@ ssh-load-linux
 # Clone Repo
 #
 mkdir -p $HOME_WIN/tcenter
+rm -rf $HOME_WIN/tcenter/tcenter-$DEPLOYMENT
 #
-[ -d $HOME_WIN/tcenter/$DEPLOYMENT/.git ] && git -C $HOME_WIN/tcenter/$DEPLOYMENT pull 
-[ ! -d $HOME_WIN/tcenter/$DEPLOYMENT/.git ] && git -C $HOME_WIN/tcenter clone https://github.com/$USER_GIT/tcenter-$DEPLOYMENT.git
+git -C $HOME_WIN/tcenter clone https://github.com/$USER_GIT/tcenter-$DEPLOYMENT.git
 #
 
 # Fix Repo
 #
-cd $HOME_WIN/tcenter/$DEPLOYMENT/
-git config --unset core.filemode
-git config --unset core.autocrlf
-git config --unset core.ignorecase
+cd $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/
+#
+./fixrepo.sh
 #
 
 #===Ansible=================================================================================================================
@@ -237,17 +240,17 @@ ssh-load-linux
 
 # Fake Artifacts
 #
-$HOME_WIN/tcenter/$DEPLOYMENT/tcenter Artifacts localhost
+$HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter Artifacts localhost
 #
 
 # Configure WSL
 #
-$HOME_WIN/tcenter/$DEPLOYMENT/tcenter provision localhost
+$HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter provision localhost
 #
 
 # Configure Windows
 #
-$HOME_WIN/tcenter/$DEPLOYMENT/tcenter winstrap localhost
+$HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter winstrap localhost
 #
 
 # Terminate and Re-Open WSL again
@@ -257,21 +260,14 @@ wsl.exe -t $WSL_DISTRO_NAME
 
 #===Tcenter=================================================================================================================
 
-# Export Variables
-#
-export DEPLOYMENT="public"
-export USER_GIT="$USER"
-export USER_WSL="$USER"
-export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
-export HOME_WSL="$HOME"
-export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
-#
-cd $HOME_WIN/tcenter/$DEPLOYMENT
+# Load SSH Keys
 #
 ssh-load-linux
 #
-./tcenter
+
+# Run Tcenter
+#
+tcenter-public
 #
 
 #===========================================================================================================================

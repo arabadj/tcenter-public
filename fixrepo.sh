@@ -7,23 +7,25 @@ while [ -z "$GLOBAL_ROOT" ]; do
 for FUNCTION in $(cat $GLOBAL_ROOT/global.env | grep "^function" | awk '{print $2}'); do 
     export -f $FUNCTION; done
 #===========================================================================================================================
-export VAGRANT_INSTANCE_NAME="vgr-linux"
-export VAGRANT_INSTANCE_ID="21"
-#---------------------------------------------------------------------------------------------------------------------------
-export VAGRANT_IMAGE_VERSION="3.2.2"
-export VAGRANT_IMAGE_NAME="arabadj/centos8"
-# export VAGRANT_IMAGE_NAME="arabadj/oracle8"
-# export VAGRANT_IMAGE_NAME="arabadj/ubuntu2010"
-#---------------------------------------------------------------------------------------------------------------------------
-export VAGRANT_INSTANCE_LOCAL="no"
-export VAGRANT_SYNCED_FOLDERS="yes"
-#---------------------------------------------------------------------------------------------------------------------------
-export VAGRANT_PROVISION_BOOTSTRAP="yes"
-export VAGRANT_PROVISION_FIREWALL="yes"
-export VAGRANT_PROVISION_USRSTRAP="yes"
-export VAGRANT_PROVISION_LOCALSTRAP="yes"
-export VAGRANT_PROVISION_HOMESTRAP="yes"
-export VAGRANT_PROVISION_DESKTOP="no"
+
+if [ -z "$(echo $GLOBAL_ROOT | grep tcenter)" ]; then echo "Wrong directory, terminating..."; exit 0; fi
+
 #===========================================================================================================================
-source $DATACENTER_ROOT/section.env
+
+cd $GLOBAL_ROOT
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+git config --unset core.filemode
+git config --unset core.autocrlf
+git config --unset core.ignorecase
+
+#---------------------------------------------------------------------------------------------------------------------------
+
+find "$GLOBAL_ROOT/" -type d -exec chmod 0755 {} \;
+find "$GLOBAL_ROOT/" -type f -exec chmod 0644 {} \;
+find "$GLOBAL_ROOT/" -type f -name '*.sh' -exec chmod 0755 {} \;
+
+chmod +x $GLOBAL_ROOT/tcenter
+
 #===========================================================================================================================
