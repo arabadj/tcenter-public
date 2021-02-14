@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#=====================================================================================================================================================
+# 
+# Your keys are located in: $HOME/.ssh/
+# Your private keys are named: id_rsa*.key
+# Your public keys are named: id_rsa*.pub
+#
+# Run with "install" argument to add envirinment
+# to your .bashrc
+#
+#=====================================================================================================================================================
+
+SSH_LOAD_NAME="ssh-load-linux"
+SSH_LOAD_PATH="~/.local/gbin"
+
+SSH_LOAD_ENV="$(cat $HOME/.bashrc | grep $SSH_LOAD_NAME | grep -v if)"
+if [ "$1" == "install" ] && [ -z "$SSH_LOAD_ENV" ]; then
+    echo "" >> $HOME/.bashrc
+    echo "if [ -x $SSH_LOAD_PATH/$SSH_LOAD_NAME ]; then" >> $HOME/.bashrc
+    echo "     . $SSH_LOAD_PATH/$SSH_LOAD_NAME" >> $HOME/.bashrc
+    echo "fi" >> $HOME/.bashrc
+    echo "" >> $HOME/.bashrc
+    source $HOME/.bashrc
+fi
+
+export SSH_HOME="/home/$USER/.ssh"
+export SSH_AUTH_SOCK="$SSH_HOME/.ssh-agent-socket"
+export SSH_AGENT_PID="$(ps -ef | grep ssh-agent | grep $SSH_AUTH_SOCK | grep -v grep | grep $USER | awk '{print $2}')"
+
+if [ -z "$SSH_AGENT_PID" ]; then
+    rm -rf $SSH_AUTH_SOCK
+    eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" > /dev/null
+fi
+if [[ "$0" == *"$SSH_LOAD_NAME"* ]]; then
+    for SSH_KEY_FILE in $SSH_HOME/id_rsa*.key; do
+        SSH_KEY_FILE=$SSH_HOME/"$(basename $SSH_KEY_FILE)"
+        SSH_KEY_FINGERPRINT=$(echo $(ssh-keygen -lf $SSH_HOME/$(basename $SSH_KEY_FILE | cut -d "." -f 1).pub) | cut -d ":" -f 2 | awk '{print $1}')
+        SSH_KEY_FILE_ADDED=$(ssh-add -l | grep $SSH_KEY_FINGERPRINT | awk '{print $3}')
+        if [ -z "$SSH_KEY_FILE_ADDED" ]; then
+            if [ ! -p $SSH_KEY_FILE ]; then
+                ssh-add $SSH_KEY_FILE
+            fi
+        fi
+    done
+fi
+
+#=====================================================================================================================================================

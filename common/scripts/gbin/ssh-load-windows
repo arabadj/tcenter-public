@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#=====================================================================================================================================================
+# 
+# Your keys are located in: /mnt/c/Users/$USER/.ssh/
+# Your private keys are named: id_rsa*.key
+# Your public keys are named: id_rsa*.pub
+#
+#=====================================================================================================================================================
+[ -z "$(ls /mnt/c/Windows)" ] && echo "Not a WSL Distribution, terminating..." && exit 0
+#=====================================================================================================================================================
+
+SSH_KEY_PATH=/mnt/c/Users/$USER/.ssh
+cd $SSH_KEY_PATH
+
+ssh-agent.exe
+
+for SSH_KEY_FILE in $SSH_KEY_PATH/id_rsa*.key; do
+    SSH_KEY_FILE_NAME=$(basename $SSH_KEY_FILE)
+    SSH_KEY_FING=$(echo $(ssh-keygen -lf $(basename $SSH_KEY_FILE | cut -d "." -f 1).pub) | cut -d ":" -f 2 | awk '{print $1}')
+    SSH_KEY_FILE_ADDED=$(ssh-add.exe -l | grep $SSH_KEY_FING | awk '{print $3}')
+    if [ -z "$SSH_KEY_FILE_ADDED" ]; then
+        ssh-add.exe $SSH_KEY_FILE_NAME
+    fi
+done
+
+#=====================================================================================================================================================
