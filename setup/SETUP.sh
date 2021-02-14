@@ -9,14 +9,14 @@ exit 0
 
 #===Fork====================================================================================================================
 
-# !!! FORK THIS REPO AS: tcenter-public !!!
+# !!! FORK THIS REPO AS: tcenter-private !!!
 # !!! OR TAKE CARE ABOUT: $DEPLOYMENT !!!
 
 #===WSL=====================================================================================================================
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -71,7 +71,7 @@ wsl.exe -t $WSL_DISTRO_NAME
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -104,7 +104,7 @@ mv $ARTIFACTS/home/user/.ssh/id_rsa_vagrant $ARTIFACTS/home/user/.ssh/id_rsa_vag
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -163,7 +163,7 @@ wsl.exe -t $WSL_DISTRO_NAME
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -195,7 +195,7 @@ cd $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -217,7 +217,7 @@ sudo apt install -y ansible
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -259,7 +259,7 @@ ssh-load-linux
 
 # Run Tcenter
 #
-tcenter-public
+tcenter-private
 #
 
 #===========================================================================================================================
