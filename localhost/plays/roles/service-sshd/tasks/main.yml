@@ -11,11 +11,6 @@
     mode: 0600
   register: sshd_config
 
-- name: Restart SSHD Service
-  service: name=sshd state=restarted
-  when:
-    - sshd_config.changed
-
 - name: Configure SSH Client
   copy:
     src: "08-custom.conf"

@@ -116,6 +116,11 @@ Add-AppxPackage ".\$PACKAGE_WSL.zip"
 Remove-Item ".\$PACKAGE_WSL.zip"
 #
 
+# Run WSL
+#
+ubuntu2004.exe
+#
+
 # Set Default Distribution
 #
 wsl.exe --set-default Ubuntu-20.04
