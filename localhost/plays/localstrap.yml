@@ -34,7 +34,7 @@
 
     - name: Link Scripts
       file:
-        src: "{{ local_root }}/scripts"
+        src: "{{ global_root }}/common/scripts"
         dest: "/cmd"
         state: link
 
