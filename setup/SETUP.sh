@@ -145,8 +145,8 @@ echo "" >> $HOME/.bashrc
 # Install SSH Keys loader
 #
 mkdir -p $HOME_WSL/.local/gbin
-wget -P $HOME_WSL/.local/gbin/ https://raw.githubusercontent.com/$USER_GIT/tcenter-public/main/common/scripts/gbin/ssh-load-linux
-wget -P $HOME_WSL/.local/gbin/ https://raw.githubusercontent.com/arabadj/public-scripts/main/ssh-load-windows
+wget -P $HOME_WSL/.local/gbin/ https://raw.githubusercontent.com/arabadj/tcenter-public/main/common/scripts/gbin/ssh-load-linux
+wget -P $HOME_WSL/.local/gbin/ https://raw.githubusercontent.com/arabadj/tcenter-public/main/common/scripts/gbin/ssh-load-windows
 chmod +x $HOME_WSL/.local/gbin/ssh-load-*
 #
 $HOME_WSL/.local/gbin/ssh-load-linux install
