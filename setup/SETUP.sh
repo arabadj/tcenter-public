@@ -9,13 +9,14 @@ exit 0
 
 #===Fork====================================================================================================================
 
-# !!! FORK THIS REPO WITH THE SAME NAME !!!
+# !!! FORK THIS REPO AS: tcenter-private !!!
+# !!! OR TAKE CARE ABOUT: $DEPLOYMENT !!!
 
-#===Files===================================================================================================================
+#===WSL=====================================================================================================================
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -24,14 +25,9 @@ export HOME_WIN="/mnt/c/Users/$USER_WIN"
 export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
 #
 
-#===WSL=====================================================================================================================
-
 # Enable SUDO with NOPASSWD 
 #
-sudo vi /etc/sudoers
-# Edit Lines:
-#
-# %sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+sudo sed -i 's/^%sudo.*/%sudo ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 #
 
 # Configure WSL Options:
@@ -75,7 +71,7 @@ wsl.exe -t $WSL_DISTRO_NAME
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -90,14 +86,14 @@ mkdir -p $ARTIFACTS/home
 mkdir -p $ARTIFACTS/home/user/.ssh
 #
 
-# Create Encrypted User SSH Key (!!! IF DO NOT HAVE !!!)
+# Create Encrypted (!!! Enter a Password !!!) User SSH Key
 #
 ssh-keygen -t rsa -b 2048 -f $ARTIFACTS/home/user/.ssh/id_rsa_$USER_WSL -C "$USER_WSL@company.com"
 #
 mv $ARTIFACTS/home/user/.ssh/id_rsa_$USER_WSL $ARTIFACTS/home/user/.ssh/id_rsa_$USER_WSL.key
 #
 
-# Create Decrypted Vagrant SSH Key (!!! IF DO NOT HAVE !!!)
+# Create Decrypted (!!! Leave the Password Blank !!!) Vagrant SSH Key
 #
 ssh-keygen -t rsa -b 2048 -f $ARTIFACTS/home/user/.ssh/id_rsa_vagrant -C "$USER_WSL@company.com"
 #
@@ -108,7 +104,7 @@ mv $ARTIFACTS/home/user/.ssh/id_rsa_vagrant $ARTIFACTS/home/user/.ssh/id_rsa_vag
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -127,11 +123,7 @@ cat $HOME_WSL/.ssh/id_rsa_$USER_WSL.pub > $HOME_WSL/.ssh/authorized_keys
 
 # Configure SSH Server
 #
-sudo vi /etc/ssh/sshd_config
-#
-# Edit and uncomment line:
-#
-# Port 2233
+sudo sed -i 's/.*Port .*/Port 2233/' /etc/ssh/sshd_config
 #
 
 # Enable SSH Server
@@ -171,7 +163,7 @@ wsl.exe -t $WSL_DISTRO_NAME
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -203,7 +195,7 @@ cd $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -225,7 +217,7 @@ sudo apt install -y ansible
 
 # Export Variables
 #
-export DEPLOYMENT="public"
+export DEPLOYMENT="private"
 export USER_GIT="$USER"
 export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
@@ -267,7 +259,7 @@ ssh-load-linux
 
 # Run Tcenter
 #
-tcenter-public
+tcenter-private
 #
 
 #===========================================================================================================================

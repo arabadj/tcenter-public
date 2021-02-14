@@ -30,8 +30,7 @@
         - "{{ home_win }}/.ssh"
         - "{{ home_win }}/.ssh/Archive"
         - "{{ home_win }}/VirtualBox"
-        - "{{ home_win }}/Work/build"
-        - "{{ home_win }}/Work/projects"
+        - "{{ home_win }}/Work"
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -84,16 +83,7 @@
         src: "{{ artifacts }}/win/Users/user/.ssh/Archive"
         dest: "{{ home_win }}/.ssh/"
         mode: "preserve"
-
-# ------------------------------------------------------------------------------------------------------------------------------------
-
-    - name: Copy GnuPG
-      copy: 
-        src: "{{ item }}"
-        dest: "{{ home_win }}/.gnupg/"
-        mode: "preserve"
-      with_fileglob:
-        - "{{ artifacts }}/win/Users/user/.gnupg/"
+      ignore_errors: true
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -105,6 +95,7 @@
       with_fileglob:
         - "{{ artifacts }}/win/Users/user/.gitconfig"
         - "{{ artifacts }}/win/Users/user/settings.json"
+      ignore_errors: true
 
     - name: Copy Config Directories
       copy: 
@@ -114,6 +105,7 @@
       with_items:
         - "{{ artifacts }}/win/Users/user/.gnupg"
         - "{{ artifacts }}/win/Users/user/Desktop"
+      ignore_errors: true
 
 # ====================================================================================================================================
 
@@ -123,11 +115,13 @@
     #     state: directory
     #   with_items:
     #     - "/mnt/c/totalcmd"
+    #   ignore_errors: true
 
     # - name: Copy Totalcmd
     #   copy: 
     #     src: "{{ artifacts }}/win/totalcmd/"
     #     dest: "/mnt/c/totalcmd/"
     #     mode: "preserve"
+    #   ignore_errors: true
 
 # ====================================================================================================================================

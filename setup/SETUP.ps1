@@ -9,7 +9,8 @@ exit 0
 
 #===Fork====================================================================================================================
 
-# !!! FORK THIS REPO WITH THE SAME NAME !!!
+# !!! FORK THIS REPO AS: tcenter-private !!!
+# !!! OR TAKE CARE ABOUT: $DEPLOYMENT !!!
 
 #===Chocolatey==============================================================================================================
 
@@ -19,6 +20,9 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 #
 
 #===OpenSSH=================================================================================================================
+
+# !!! Unistall Windows Optional Feature: OpenSSH Client !!!
+# !!! Unistall Windows Optional Feature: OpenSSH Server !!!
 
 # Install OpenSSH
 #
@@ -30,7 +34,7 @@ choco install openssh -y
 $env:path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 #
 
-# Setup SSH
+# Setup OpenSSH
 #
 Set-Location "C:\Program Files\OpenSSH-Win64\"
 powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
@@ -59,6 +63,8 @@ VBoxManage.exe hostonlyif ipconfig "VirtualBox Host-Only Ethernet Adapter" --ip 
 
 #===Packages================================================================================================================
 
+# !!! THIS SECTION IS OPTIONAL !!!
+
 # Change Directory
 #
 Set-Location $HOME
@@ -68,8 +74,8 @@ Set-Location $HOME
 #
 choco install git -y
 choco install sysinternals -y --params "/InstallDir:C:\Sysinternals"
-#choco install winbox -y
-choco install fiddler -y
+# choco install winbox -y
+# choco install fiddler -y
 choco install winmtr-redux -y
 choco install nmap -y
 choco install wireshark -y
@@ -81,6 +87,9 @@ $env:path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";
 #
 
 #===WSL=====================================================================================================================
+
+# !!! Disable Windows Feature: Hyper-V !!!
+# !!! Disable Windows Feature: Virtual Machine Platform !!!
 
 # Enable WSL
 #
@@ -104,7 +113,7 @@ Invoke-WebRequest -Uri "https://aka.ms/$PACKAGE_WSL" -OutFile ".\$PACKAGE_WSL.zi
 #
 Add-AppxPackage ".\$PACKAGE_WSL.zip"
 #
-Remove-Item ".\$PACKAGE_WSL.appx"
+Remove-Item ".\$PACKAGE_WSL.zip"
 #
 
 # Set Default Distribution
