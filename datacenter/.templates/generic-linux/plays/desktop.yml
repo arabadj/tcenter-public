@@ -37,5 +37,13 @@
         dest: /etc/systemd/system/default.target
         state: link
 
+    - name: Copy Private Keys
+      copy:
+        src: "{{ item }}"
+        dest: "~/.ssh/"
+        mode: 0644
+      with_fileglob:
+        - "{{ artifacts }}/home/user/.ssh/id_rsa_*.key"
+
 # ====================================================================================================================================
 
