@@ -245,6 +245,11 @@ $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter provision localhost
 $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter winstrap localhost
 #
 
+# Update and Install Prerequisites
+#
+/cmd/post-provision-pip3.sh
+#
+
 # Terminate and Re-Open WSL again
 #
 wsl.exe -t $WSL_DISTRO_NAME
