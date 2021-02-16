@@ -13,7 +13,7 @@ cd $LOCAL_ROOT
 set -e
 #===========================================================================================================================
 
-vagrant destroy && rm -rf $LOCAL_ROOT/.vagrant && rm -rf $HOME_WIN/VirtualBox/$VAGRANT_INSTANCE_NAME
+vagrant destroy --force && rm -rf $LOCAL_ROOT/.vagrant && rm -rf $HOME_WIN/VirtualBox/$VAGRANT_INSTANCE_NAME
 
 #---------------------------------------------------------------------------------------------------------------------------
 

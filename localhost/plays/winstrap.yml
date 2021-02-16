@@ -31,6 +31,8 @@
         - "{{ home_win }}/.ssh/Archive"
         - "{{ home_win }}/VirtualBox"
         - "{{ home_win }}/Work"
+        - "{{ global_root }}/../tcenter-backup"
+        # - "{{ global_root }}/../tcenter-shared"
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 

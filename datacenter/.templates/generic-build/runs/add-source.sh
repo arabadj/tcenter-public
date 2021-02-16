@@ -21,7 +21,11 @@ function image_download () {
   export PACKER_BUILD_OUTPUT="$PACKER_BUILD_PATH/output/$PACKER_DISTRO_NAME/$PACKER_BUILD_VERSION"
   export PACKER_BUILD_BOX="$PACKER_BUILD_OUTPUT/package.box"
 
-  vagrant box add --force $PACKER_BUILD_NAME --box-version $PACKER_BUILD_VERSION --provider virtualbox
+  echo ""
+  echo "Adding Box: $PACKER_BUILD_SOURCE"
+  echo ""
+
+  vagrant box add --force $PACKER_BUILD_SOURCE --box-version $PACKER_BUILD_VERSION --provider virtualbox
 
 }
 

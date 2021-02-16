@@ -11,6 +11,6 @@ for FUNCTION in $(cat $LOCAL_ROOT/local.env | grep "^function" | awk '{print $2}
 cd $LOCAL_ROOT
 #===========================================================================================================================
 
-vagrant destroy && rm -rf $LOCAL_ROOT/.vagrant && rm -rf $HOME_WIN/VirtualBox/$VAGRANT_INSTANCE_NAME
+vagrant destroy --force && rm -rf $LOCAL_ROOT/.vagrant && rm -rf $HOME_WIN/VirtualBox/$VAGRANT_INSTANCE_NAME
 
 #===========================================================================================================================
