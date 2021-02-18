@@ -63,3 +63,11 @@
     - (ansible_distribution == "Ubuntu") 
 
 # ====================================================================================================================================
+
+- name: Configure Default Runlevel
+  file:
+    src: "/usr/lib/systemd/system/{{ default_runlevel }}.target"
+    dest: "/etc/systemd/system/default.target"
+    state: link
+
+# ====================================================================================================================================

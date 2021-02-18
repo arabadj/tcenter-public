@@ -26,6 +26,18 @@
     with_fileglob:
       - "{{ artifacts }}/home/user/.ssh/id_rsa_*.pub"
 
+  - name: Copy Private Keys
+    become: true
+    become_user: "{{ ansible_deployer }}"
+    copy:
+      src: "{{ item }}"
+      dest: "~/.ssh/"
+      mode: 0600
+    with_fileglob:
+      - "{{ artifacts }}/home/user/.ssh/id_rsa_*.key"
+    when:
+      - (private_keys == true)
+
   ignore_errors: yes
   become: true
   become_user: "{{ ansible_deployer }}"

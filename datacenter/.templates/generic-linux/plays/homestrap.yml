@@ -22,7 +22,7 @@
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     - {role: profile-common}
-    - {role: profile-ssh}
+    - {role: profile-ssh, private_keys: false}
     - {role: profile-mc}
 
     # - {role: profile-git}

@@ -21,7 +21,7 @@
   
 # ------------------------------------------------------------------------------------------------------------------------------------
 
-    - {role: desktop-common}
+    - {role: desktop-common, default_runlevel: "graphical"}
     - {role: desktop-enhanced}
       
 # ====================================================================================================================================
@@ -29,21 +29,6 @@
   tasks:
 
 # ------------------------------------------------------------------------------------------------------------------------------------
-
-    - name: Configure Default Runlevel
-      file:
-        # src: /usr/lib/systemd/system/multi-user.target
-        src: /usr/lib/systemd/system/graphical.target
-        dest: /etc/systemd/system/default.target
-        state: link
-
-    - name: Copy Private Keys
-      copy:
-        src: "{{ item }}"
-        dest: "~/.ssh/"
-        mode: 0644
-      with_fileglob:
-        - "{{ artifacts }}/home/user/.ssh/id_rsa_*.key"
 
 # ====================================================================================================================================
 

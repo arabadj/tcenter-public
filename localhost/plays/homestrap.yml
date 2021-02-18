@@ -23,10 +23,10 @@
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     - {role: profile-common}
-    - {role: profile-ssh}
+    - {role: profile-ssh, private_keys: true}
     - {role: profile-mc}
-    - {role: profile-git}
 
+    - {role: profile-git}
     - {role: profile-gbin}
     - {role: profile-gnupg}
     - {role: profile-docker}
