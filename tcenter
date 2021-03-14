@@ -32,6 +32,24 @@ echo ""
 function print_usage () {
   echo ""
   echo "Usage:"
+  echo "        tcenter-$DEPLOYMENT help"
+  echo "        tcenter-$DEPLOYMENT list"
+  echo "        tcenter-$DEPLOYMENT templates"
+  echo "        tcenter-$DEPLOYMENT new <name> <template>"
+  echo "        tcenter-$DEPLOYMENT edit <name>"
+  echo "        tcenter-$DEPLOYMENT actions <name>"
+  echo "        tcenter-$DEPLOYMENT provision <name>"
+  echo "        tcenter-$DEPLOYMENT remove <name>"
+  echo "        tcenter-$DEPLOYMENT link"
+  echo "        tcenter-$DEPLOYMENT unlink"
+  echo "        tcenter-$DEPLOYMENT share <name>"
+  echo "        tcenter-$DEPLOYMENT unshare <name>"
+  echo ""
+}
+
+function print_actions () {
+  echo ""
+  echo "Actions:"
   echo "        tcenter-$DEPLOYMENT list"
   echo "        tcenter-$DEPLOYMENT templates"
   echo "        tcenter-$DEPLOYMENT new <name> <template>"
@@ -255,6 +273,11 @@ INSTANCE_NAME="$2"
 INSTANCE_ACTION="$1"
 
 case  $1 in
+  "help")
+    # vgr_instance_list
+    print_usage
+    # print_actions
+    ;;
   "share")
     vgr_instance_share $INSTANCE_NAME
     vgr_instance_unlink
