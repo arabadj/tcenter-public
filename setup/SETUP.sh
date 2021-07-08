@@ -22,7 +22,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 
 # Enable SUDO with NOPASSWD 
@@ -77,7 +77,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 
 # Create Artifact Directories
@@ -110,7 +110,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 
 # Configure SSH Client
@@ -169,7 +169,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 # Load SSH Keys
 #
@@ -201,7 +201,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 # Load SSH Keys
 #
@@ -223,7 +223,7 @@ export USER_WSL="$USER"
 export USER_WIN="$(whoami.exe | cut -d '\' -f 2 | tr -d '\n' | tr -d '\r')"
 export HOME_WSL="$HOME"
 export HOME_WIN="/mnt/c/Users/$USER_WIN"
-export ARTIFACTS="$HOME_WIN/OneDrive/Artifacts/$DEPLOYMENT"
+export ARTIFACTS="$HOME_WIN/GoogleDrive/Artifacts/$DEPLOYMENT"
 #
 # Load SSH Keys
 #
@@ -253,6 +253,29 @@ $HOME_WIN/tcenter/tcenter-$DEPLOYMENT/tcenter winstrap localhost
 # Terminate and Re-Open WSL again
 #
 wsl.exe -t $WSL_DISTRO_NAME
+#
+
+#===Vagrant-Plugins=========================================================================================================
+
+# Load SSH Keys
+#
+ssh-load-linux
+#
+
+# Install Vagrant Plugins
+#
+vagrant plugin install vagrant-aws
+# vagrant plugin install vagrant-aws-mkubenka --plugin-version "0.7.2.pre.24"
+#
+
+# List Vagrant Plugins
+#
+vagrant plugin list
+#
+
+# Add Dummy Box
+#
+vagrant box add aws https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
 #
 
 #===Tcenter=================================================================================================================

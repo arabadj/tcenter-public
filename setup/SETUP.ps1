@@ -73,6 +73,7 @@ Set-Location $HOME
 # Install Packages
 #
 choco install git -y
+choco install python3 -y
 choco install sysinternals -y --params "/InstallDir:C:\Sysinternals"
 # choco install winbox -y
 # choco install fiddler -y

@@ -109,6 +109,15 @@
         - "{{ artifacts }}/win/Users/user/Desktop"
       ignore_errors: true
 
+    - name: Copy Config Directories
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ home_win }}/"
+        mode: 0600
+      with_items:
+        - "{{ artifacts }}/win/Users/user/.aws"
+      ignore_errors: true
+
 # ====================================================================================================================================
 
     # - name: Create Directory

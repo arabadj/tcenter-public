@@ -94,7 +94,7 @@ function vgr_instance_list () {
   echo ""
   echo "NAME:    " $'\t\t' "HOSTNAME:" $'\t\t' "IP:" $'\t\t\t' "IMAGE:" $'\t\t\t' "STATUS:"
   for i in $(ls -l "$DATACENTER_ROOT" | awk '{print $9}'); do
-    if [ -d "$i" ]; then
+    if [ -d "$i" ] && [ -f "$i/local.env" ]; then
       t=""
       s=""
       export LOCAL_ROOT="$DATACENTER_ROOT/$i"

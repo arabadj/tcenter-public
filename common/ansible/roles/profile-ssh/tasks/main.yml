@@ -35,6 +35,7 @@
       mode: 0600
     with_fileglob:
       - "{{ artifacts }}/home/user/.ssh/id_rsa_*.key"
+      - "{{ artifacts }}/home/user/.ssh/id_rsa_*.pem"
     when:
       - (private_keys == true)
 
